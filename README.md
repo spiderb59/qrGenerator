@@ -1,10 +1,10 @@
-**QR Generator**
+**Visitor Pass Generator**
 
-This is a simple QR code generator developed using HTML and CSS only. It allows users to generate QR codes for various purposes.
+This is a visitor pass generator embedded with QR generation which holds the data for visitor.
 
 ### Usage
 
-Visit [QR Generator](https://spiderb59.github.io/qrGenerator/) to access the live version of the application.
+Visit [Visitor Pass Generator](https://spiderb59.github.io/visitor-pass-generator/) to access the live version of the application.
 
 ### Features (Upcoming)
 
