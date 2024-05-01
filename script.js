@@ -1,33 +1,124 @@
 function generateQR() {
-      var qrText = document.getElementById('qr-text').value;
-      if (qrText === '') {
-        document.getElementById("error").style.display = "block";
-        document.getElementById('error').innerHTML = 'Please enter URL or text to generate QR code.';
-        return;
-      }
+  var qrName = document.getElementById('visitor-name').value.trim();
+  var qrCompany = document.getElementById('visitor-company').value.trim();
+  var qrPhoneNumber = document.getElementById('visitor-phone').value.trim();
+  var qrEmail = document.getElementById('visitor-email').value.trim();
 
-      var qrSize = parseInt(document.getElementById('qr-size').value);
-      var qrColor = document.getElementById('qr-color').value;
-      var qrBackgroundColor = document.getElementById('qr-background-color').value;
-      var qrErrorCorrection = document.getElementById('qr-error-correction').value;
+  // Validate visitor details
+  if (qrName === '') {
+    showError('Please enter the visitor name.');
+    return;
+  }
 
-      var qr = new QRious({
-        element: document.getElementById('qr-code'),
-        value: qrText,
-        size: qrSize,
-        foreground: qrColor,
-        background: qrBackgroundColor,
-        level: qrErrorCorrection
-      });
+  if (qrCompany === '') {
+    showError('Please enter the visitor company name.');
+    return;
+  }
 
-      document.getElementById('success').innerHTML = 'QR Code Generated for: '+qrText;
-      document.getElementById("success").style.display = "block";
-  
-      var downloadLink = document.getElementById('download-link');
-      downloadLink.href = document.getElementById('qr-code').toDataURL('image/png');
-      downloadLink.style.display = 'inline-block';
+  if (qrPhoneNumber === '') {
+    showError('Please enter the visitor phone number.');
+    return;
+  } else if (qrPhoneNumber.length < 10 || qrPhoneNumber.length > 15) {
+    showError('Please enter a valid phone number.');
+    return;
+  }
 
-       document.getElementById('error').innerHTML = '';
-       document.getElementById('qr-text').value= '';
+  if (qrEmail === '') {
+    showError('Please enter the visitor email.');
+    return;
+  } else if (!isValidEmail(qrEmail)) {
+    showError('Please enter a valid email address.');
+    return;
+  }
 
-    }
+  // Create a random ID for the visitor pass
+  var randomId = Date.now() + '_' + Math.floor(Math.random() * 1000);
+
+  // Get the current date and time in the Asia/Tokyo timezone
+  var currentDate = new Date();
+  currentDate.setHours(currentDate.getHours());
+  var formattedDateTime = currentDate.toLocaleString('en-US', { timeZone: 'Asia/Tokyo' });
+
+  // Encode the random ID for use in the QR code
+  var encodedRandomId = encodeURIComponent(randomId);
+
+  // Generate the QR code with the visitor pass details
+  var qrText = "http://localhost:8000?id=" + encodedRandomId; //will use the project url later
+  var qr = new QRious({
+    element: document.getElementById('qr-code'),
+    value: qrText,
+    size: 150, 
+    level: "H"
+  });
+
+  // Display success message
+  document.getElementById('success').innerHTML = 'Visitor Pass QR Code Generated';
+
+  // Create a download link for the visitor pass image
+  var downloadLink = document.getElementById('download-link');
+
+  // Create a canvas to draw the visitor pass details and QR code
+  var canvas = document.createElement('canvas');
+  var ctx = canvas.getContext('2d');
+
+  // Set canvas size
+  canvas.width = 400;
+  canvas.height = 500;
+
+  // Apply background color
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  // Draw the visitor pass details
+  ctx.font = '18px Arial';
+  ctx.fillStyle = '#000000';
+  ctx.fillText('Company Name: Visitor Pass', 40, 30);
+  ctx.font = '14px Arial';
+  ctx.fillText('ID: ' + randomId, 20, 70);
+  ctx.fillText('Name: ' + qrName, 20, 100);
+  ctx.fillText('Company Name: ' + qrCompany, 20, 130);
+  ctx.fillText('Phone Number: ' + qrPhoneNumber, 20, 160);
+  ctx.fillText('Date: ' + formattedDateTime, 20, 190);
+
+  // Draw the QR code
+  var qrImage = new Image();
+  qrImage.src = qr.toDataURL('image/png');
+  qrImage.onload = function() {
+    ctx.drawImage(qrImage, 100, 200, 200, 200); // Position and size of QR code
+
+    // Convert canvas to data URL
+    var dataURL = canvas.toDataURL('image/png');
+
+    // Set download link attributes
+    downloadLink.href = dataURL;
+    downloadLink.download = 'visitor_pass.png';
+    downloadLink.textContent = 'Download Visitor Pass Image';
+    downloadLink.style.display = 'inline-block';
+
+    // Append the download link to the page
+    document.body.appendChild(downloadLink);
+  };
+
+  // Clear any previous error messages
+  clearError();
+
+  // Clear input fields
+  document.getElementById('visitor-name').value = '';
+  document.getElementById('visitor-company').value = '';
+}
+
+// Function to display an error message
+function showError(message) {
+  document.getElementById('error').innerHTML = message;
+}
+
+// Function to clear the error message
+function clearError() {
+  document.getElementById('error').innerHTML = '';
+}
+
+// Function to validate email format
+function isValidEmail(email) {
+  var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+}
