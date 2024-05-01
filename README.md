@@ -8,7 +8,7 @@ Visit [Visitor Pass Generator](https://spiderb59.github.io/visitor-pass-generato
 
 ### Features (Upcoming)
 
-- **Visitor Pass:** Soon, additional features will be added to the QR generator. Users will be able to add details such as name and time the QR code was generated, and this information will be embedded into the QR code. The generated QR code will serve as a visitor pass.
+- **Visitor Pass:** Soon, additional features will be added to the QR generator. Users will be able to add details such as name and time the QR code was generated, and this information will be embedded into the QR code. The generated QR code will serve as a visitor pass. (Created) 
   
 - **Scan Recording:** When the QR code is scanned, the data will be stored in a database in another application. This will allow for recording the time of each scan.
 
