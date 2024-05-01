@@ -1,42 +1,36 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>QR Code Generator</title>
-	 <link rel="stylesheet" type="text/css" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Visitor Pass Generator</title>
+ 	<link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body>
-  <h1>QR Code Generator</h1>
-  <p id="success" class="success-message"></p>
-  <p id="error" class="error-message"></p>
-  <label for="qr-text">URL or Text:</label>
-  <input type="text" id="qr-text" placeholder="Enter URL or Text" class="input-field">
-  <br>
-  <label for="qr-size">Size:</label>
-  <input type="number" id="qr-size" min="100" max="500" value="100" class="input-field">
-  <br>
-  <label for="qr-color">Foreground Color:</label>
-  <input type="color" id="qr-color" value="#000000" class="input-field">
-  <br>
-  <label for="qr-background-color">Background Color:</label>
-  <input type="color" id="qr-background-color" value="#ffffff" class="input-field">
-  <br>
-  <label for="qr-error-correction">Error Correction Level:</label>
-  <select id="qr-error-correction" class="input-field">
-    <option value="L">Low</option>
-    <option value="M" selected>Medium</option>
-    <option value="Q">Quartile</option>
-    <option value="H">High</option>
-  </select>
-  <br>
-  <button onclick="generateQR()">Generate QR Code</button>
+   <h1>Visitor Pass Generator</h1>
+    <p id="success" class="success-message"></p>
+   <p id="error" class="error-message"></p>
+   <form>
+     <label for="visitor-name">Name of visitor:</label>
+     <input type="text" id="visitor-name" placeholder="John Smith" class="input-field" required><br>
+     
+     <label for="visitor-company">Name of visitor's Company:</label>
+     <input type="text" id="visitor-company" placeholder="ABC Company" class="input-field" required><br>
+     
+     <label for="visitor-phone">Phone No:</label>
+     <input type="text" id="visitor-phone" placeholder="080xxxxxxxxx" class="input-field" required><br>
+     
+     <label for="visitor-email">Email Address:</label>
+     <input type="email" id="visitor-email" placeholder="test@yourdomain.com" class="input-field" required><br>
+   </form>
+    <button onclick="generateQR()">Generate Pass</button>
   <canvas id="qr-code"></canvas>
-  <a id="download-link" download="qr-code.png" style="display: none;"><button>Download Code</button></a>
+   <button id="download-link" download="qr-code.png" style="display: none;">Download Pass</button>
   <footer>
     Created with <span class="heart">❤️</span> by :<a href="https://me.shitalmainali.com.np/" target="_blank" style="color: #fff; text-decoration: none;">Shital Mainali</a>
   </footer>
 </body>
-	<script src="script.js"></script>
-	<script src="https://cdn.jsdelivr.net/npm/qrious"></script>
+
+<script src="test.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrious"></script>
 </html>
