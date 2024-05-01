@@ -2,7 +2,7 @@ function generateQR() {
       var qrText = document.getElementById('qr-text').value;
       if (qrText === '') {
         document.getElementById("error").style.display = "block";
-        document.getElementById('error').innerHTML = 'Please enter URL to generate QR code.';
+        document.getElementById('error').innerHTML = 'Please enter URL or text to generate QR code.';
         return;
       }
 
