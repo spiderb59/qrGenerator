@@ -10,6 +10,21 @@ body {
 h1 {
   margin-top: 20px;
 }
+form {
+   margin: 20px auto;
+   padding: 20px;
+   max-width: 400px;
+   background-color: #f8f9fa;
+   border-radius: 8px;
+   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+ }
+
+ label {
+   display: block;
+   margin-bottom: 5px;
+   font-weight: bold;
+   color: #333;
+ }
 
 input[type="text"] {
   padding: 10px;
@@ -58,46 +73,17 @@ button:hover {
 
 canvas#qr-code {
   margin-top: 20px;
+  margin-bottom: 20px;
   max-width: 80%;
   display: block;
   margin-left: auto;
   margin-right: auto;
-  border: 1px solid #ccc;
-  border-radius: 5px;
 }
 
 a#download-link {
   display: none;
 }
 
-#error.error-message {
-  display: none;
-  position: fixed;
-  top: 10%;
-  left: 50%;
-  color: red;
-  background-color: #ffe6e6;
-  padding: 10px;
-  border-radius: 5px;
-  border: 1px solid #ff6666;
-  font-family: Arial, sans-serif;
-  font-size: 16px;
-  font-weight: bold;
-}
-
-#success.success-message {
-  display: none;
-  position: fixed;
-  left: 50%;
-  color: green;
-  background-color: #e6ffe6;
-  padding: 10px;
-  border-radius: 5px;
-  border: 1px solid #66ff66;
-  font-family: Arial, sans-serif;
-  font-size: 16px;
-  font-weight: bold;
-}
 
 #download-btn {
   margin-top: 20px;
@@ -106,7 +92,7 @@ a#download-link {
 footer {
   color: #fff; 
   padding: 20px;
-  text-align: center;
+  text-align: left;
   position: fixed;
   bottom: 0;
   width: 100%;
@@ -121,3 +107,27 @@ footer {
   from { transform: scale(1); }
   to { transform: scale(1.1); }
 }
+
+.qr-code {
+  display: block;
+  margin-top: 5px;
+}
+
+#download-link {
+  display: inline-block;
+  margin-top: 20px;
+  padding: 10px 20px;
+  background-color: #3498db;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  text-decoration: none;
+  font-size: 16px;
+  transition: background-color 0.3s;
+}
+
+#download-link:hover {
+  background-color: #2980b9;
+}
+
