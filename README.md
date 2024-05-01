@@ -2,9 +2,9 @@
 
 This is a visitor pass generator embedded with QR generation which holds the data for visitor.
 
-### Usage
+### Installation
 
-Visit [Visitor Pass Generator](https://spiderb59.github.io/visitor-pass-generator/) to access the live version of the application.
+Will add once completed. 
 
 ### Features (Upcoming)
 
