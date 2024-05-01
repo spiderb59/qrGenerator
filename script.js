@@ -43,7 +43,7 @@ function generateQR() {
   var encodedRandomId = encodeURIComponent(randomId);
 
   // Generate the QR code with the visitor pass details
-  var qrText = "http://localhost:8000?id=" + encodedRandomId; //will use the project url later
+  var qrText = "http://localhost:8000?id=" + encodedRandomId;
   var qr = new QRious({
     element: document.getElementById('qr-code'),
     value: qrText,
@@ -70,7 +70,7 @@ function generateQR() {
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
   // Draw the visitor pass details
-  ctx.font = '18px Arial';
+  ctx.font = 'bold 18px Arial';
   ctx.fillStyle = '#000000';
   ctx.fillText('Company Name: Visitor Pass', 40, 30);
   ctx.font = '14px Arial';
@@ -90,12 +90,14 @@ function generateQR() {
     var dataURL = canvas.toDataURL('image/png');
 
     // Set download link attributes
+
     downloadLink.href = dataURL;
+    downloadLink.style = 'btn btn-secondary';
+
     downloadLink.download = 'visitor_pass.png';
     downloadLink.textContent = 'Download Visitor Pass Image';
     downloadLink.style.display = 'inline-block';
 
-    // Append the download link to the page
     document.body.appendChild(downloadLink);
   };
 
@@ -107,7 +109,7 @@ function generateQR() {
   document.getElementById('visitor-company').value = '';
   document.getElementById('visitor-phone').value = '';
   document.getElementById('visitor-email').value = '';
-  
+
 }
 
 // Function to display an error message
