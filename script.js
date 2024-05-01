@@ -105,6 +105,9 @@ function generateQR() {
   // Clear input fields
   document.getElementById('visitor-name').value = '';
   document.getElementById('visitor-company').value = '';
+  document.getElementById('visitor-phone').value = '';
+  document.getElementById('visitor-email').value = '';
+  
 }
 
 // Function to display an error message
