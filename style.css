@@ -1,0 +1,123 @@
+body {
+  align-content: center;
+  font-family: Arial, sans-serif;
+  text-align: center;
+  background: linear-gradient(45deg, #3498db, #2c3e50); 
+  color: #fff;
+  padding: 20px;
+}
+
+h1 {
+  margin-top: 20px;
+}
+
+input[type="text"] {
+  padding: 10px;
+  margin: 20px;
+  width: 80%;
+  max-width: 400px;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  background-color: #34495e;
+  color: #fff; 
+}
+
+.input-field {
+  padding: 10px;
+  margin: 10px 0;
+  width: calc(100% - 22px);
+  max-width: 300px; 
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  background-color: #34495e; 
+  color: #fff;
+  transition: border-color 0.3s; 
+}
+
+.input-field:focus {
+  outline: none;
+  border-color: #3498db; 
+}
+
+button {
+  padding: 10px 20px;
+  background-color: #3498db; 
+  color: #fff; 
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s;
+}
+
+button:hover {
+  background-color: #2980b9; 
+}
+
+canvas#qr-code {
+  margin-top: 20px;
+  max-width: 80%;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+a#download-link {
+  display: none;
+}
+
+#error.error-message {
+  display: none;
+  position: fixed;
+  top: 10%;
+  left: 50%;
+  color: red;
+  background-color: #ffe6e6;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ff6666;
+  font-family: Arial, sans-serif;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+#success.success-message {
+  display: none;
+  position: fixed;
+  left: 50%;
+  color: green;
+  background-color: #e6ffe6;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #66ff66;
+  font-family: Arial, sans-serif;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+#download-btn {
+  margin-top: 20px;
+}
+
+footer {
+  color: #fff; 
+  padding: 20px;
+  text-align: center;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+}
+
+.heart {
+  animation: beat 0.2s infinite alternate;
+  display: inline-block;
+}
+
+@keyframes beat {
+  from { transform: scale(1); }
+  to { transform: scale(1.1); }
+}
