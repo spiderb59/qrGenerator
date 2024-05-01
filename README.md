@@ -4,7 +4,12 @@ This is a visitor pass generator embedded with QR generation which holds the dat
 
 ### Installation
 
-Will add once completed. 
+Will complete all steps  once completed. 
+For now: 
+1.Clone the repo or download as zip. 
+2. Go to directory
+3. npm install
+4. node server.js to start the server. 
 
 ### Features (Upcoming)
 
