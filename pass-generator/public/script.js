@@ -85,8 +85,7 @@ function generateQR() {
   var qrImage = new Image();
   qrImage.src = qr.toDataURL('image/png');
   qrImage.onload = function() {
-    ctx.drawImage(qrImage, 100, 200, 200, 200); // Position and size of QR code
-
+  ctx.drawImage(qrImage, 100, 200, 200, 200); // Position and size of QR code
     // Convert canvas to data URL
     var dataURL = canvas.toDataURL('image/png');
 
@@ -94,8 +93,7 @@ function generateQR() {
 
     downloadLink.href = dataURL;
     downloadLink.style = 'btn btn-secondary';
-
-    downloadLink.download = 'visitor_pass.png';
+    downloadLink.download = randomId+'_pass.png';
     downloadLink.textContent = 'Download Visitor Pass Image';
     downloadLink.style.display = 'inline-block';
 
