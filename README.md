@@ -2,9 +2,14 @@
 
 This is a visitor pass generator embedded with QR generation which holds the data for visitor.
 
-### Usage
+### Installation
 
-Visit [Visitor Pass Generator](https://spiderb59.github.io/visitor-pass-generator/) to access the live version of the application.
+Will complete all steps  once completed. 
+For now: 
+1.Clone the repo or download as zip. 
+2. Go to directory
+3. npm install
+4. node server.js to start the server. 
 
 ### Features (Upcoming)
 
