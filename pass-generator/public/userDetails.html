@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Detail:</title>
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+    }
+    th, td {
+      padding: 8px;
+      border-bottom: 1px solid #ddd;
+      text-align: left;
+    }
+    th {
+      background-color: #f2f2f2;
+    }
+    .pdf-container {
+      width: 100%;
+      height: 600px;
+    }
+  </style>
+</head>
+<body class="container">
+  <h1 class="mt-3">User Details</h1>
+  <table class="table table-bordered table-striped">
+    <thead class="thead-light">
+      <tr>
+        <th>Name of Visitor</th>
+        <th>Name of Company</th>
+        <th>Visitor Phone Number</th>
+        <th>Visitor Email</th>
+        <th>Visitor Pass*</th>
+      </tr>
+    </thead>
+    <tbody id="userDetailsBody">
+      <tr id="userDetailsRow">
+      </tr>
+    </tbody>
+  </table>
+
+  <script>
+    window.onload = async function() {
+      // Extract user ID from the URL pathname
+      const userId = window.location.pathname.split('/').pop();
+
+      try {
+        // Fetch user details
+        const response = await fetch(`/user/${userId}`);
+        const userDetails = await response.json();
+
+        // Construct HTML content using template literals
+        const userDetailsHtml = `
+          <td>${userDetails.name}</td>
+          <td>${userDetails.company_name}</td>
+          <td>${userDetails.phone}</td>
+          <td>${userDetails.email}</td>
+          <td>${userDetails.pass_path}</td>
+        `;
+
+        // Insert HTML content into the table row
+        document.getElementById('userDetailsRow').innerHTML = userDetailsHtml;
+      } catch (error) {
+        console.error('Error fetching user details:', error);
+        // Display error message if user details couldn't be fetched
+        document.getElementById('userDetailsBody').innerHTML = `
+          <tr>
+            <td colspan="5">Error fetching user details. Please try again later.</td>
+          </tr>
+        `;
+      }
+    };
+  </script>
+
+  <!-- Bootstrap JS and jQuery (optional) -->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
