@@ -1,4 +1,3 @@
-// Function to generate QR code and save visitor details
 function generateQR() {
   var qrName = document.getElementById('visitor-name').value.trim();
   var qrCompany = document.getElementById('visitor-company').value.trim();
@@ -39,6 +38,8 @@ function generateQR() {
     if (data.success) {
       // Success message
       document.getElementById('success').innerHTML = 'Visitor details saved successfully.';
+      document.getElementById('visitor-name').value = '';
+
     } else {
       // Error message
       showError(data.message);
