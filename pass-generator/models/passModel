@@ -1,0 +1,39 @@
+const pool = require('../config/database');
+
+async function saveVisitorDetails(id, name, company_name, phone, email, pass_path) {
+    try {
+      // Get the current date and time in Japan timezone
+      const options = { timeZone: 'Asia/Tokyo' };
+      const now = new Date();
+      const formattedDateTime = now.toLocaleString('en-US', options);
+      
+      // Extract date and time parts
+      const [datePart, timePart] = formattedDateTime.split(', ');
+      const [month, day, year] = datePart.split('/');
+      const [hoursMinutesSeconds, amPm] = timePart.split(' ');
+      const [hours, minutes, seconds] = hoursMinutesSeconds.split(':');
+
+      // Convert 12-hour time to 24-hour time
+      let hour24 = parseInt(hours, 10);
+      if (amPm === 'PM') {
+        hour24 += 12;
+      }
+      
+      // Construct MySQL-compatible datetime string
+      const mysqlFormattedDateTime = `${year}:${month}:${day} ${hour24}:${minutes}:${seconds}`;
+
+      const query = `
+        INSERT INTO visitor_details (id, name, company_name, phone, email, created_at, pass_path)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+      `;
+      await pool.query(query, [id, name, company_name, phone, email, mysqlFormattedDateTime, pass_path]);
+      return { success: true, message: 'Visitor details saved successfully.' };
+    } catch (error) {
+      console.error('Error saving visitor details:', error);
+      return { success: false, message: 'Failed to save visitor details.' };
+    }
+}
+
+module.exports = {
+  saveVisitorDetails
+};
