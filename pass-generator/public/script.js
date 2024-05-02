@@ -38,6 +38,7 @@ function generateQR() {
   var currentDate = new Date();
   currentDate.setHours(currentDate.getHours());
   var formattedDateTime = currentDate.toLocaleString('en-US', { timeZone: 'Asia/Tokyo' });
+  var formattedDateTime = currentDate.toISOString().slice(0, 19).replace('T', ' ');
 
   // Encode the random ID for use in the QR code
   var encodedRandomId = encodeURIComponent(randomId);
@@ -99,7 +100,9 @@ function generateQR() {
     downloadLink.style.display = 'inline-block';
 
     document.body.appendChild(downloadLink);
+    sendFormData(randomId, qrName, qrCompany, qrPhoneNumber, qrEmail, formattedDateTime);
   };
+
 
   // Clear any previous error messages
   clearError();
@@ -126,4 +129,31 @@ function clearError() {
 function isValidEmail(email) {
   var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return emailRegex.test(email);
+}
+
+function sendFormData(id, name, company, phone, email, formattedDateTime) {
+  fetch('/save-visitor-details', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      id: id,
+      name: name,
+      company_name: company,
+      phone: phone,
+      email: email,
+      date: formattedDateTime
+    })
+  })
+  .then(response => {
+    if (response.ok) {
+      console.log('Visitor details saved successfully.');
+    } else {
+      console.error('Failed to save visitor details.');
+    }
+  })
+  .catch(error => {
+    console.error('Error saving visitor details:', error);
+  });
 }
