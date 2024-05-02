@@ -12,13 +12,14 @@ const pool = mysql.createPool({
 });
 
 // Function to insert visitor details into the database
-async function saveVisitorDetails(id, name, company_name, phone, email, date) {
+async function saveVisitorDetails(id, name, company_name, phone, email, date, pass_path) {
+
   try {
     const query = `
-      INSERT INTO visitor_details (id, name, company_name, phone, email, created_at)
-      VALUES (?, ?, ?, ?, ?, ?)
+      INSERT INTO visitor_details (id, name, company_name, phone, email, created_at, pass_path)
+      VALUES (?, ?, ?, ?, ?, ?, ?)
     `;
-    await pool.query(query, [id, name, company_name, phone, email, date]);
+    await pool.query(query, [id, name, company_name, phone, email, date, pass_path]);
     return { success: true, message: 'Visitor details saved successfully.' };
   } catch (error) {
     console.error('Error saving visitor details:', error);
