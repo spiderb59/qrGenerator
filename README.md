@@ -2,6 +2,11 @@
 
 This is a visitor pass generator embedded with QR generation which holds the data for visitor.
 
+### Completion till now; 
+(May 2,2024)
+1. Data can be inserted via form
+2. The pass will be generated as pdf and stored in folders.
+
 ### Prerequisites: 
 1. Node.js and npm installed on your machine
 2. MySQL database server installed and running
