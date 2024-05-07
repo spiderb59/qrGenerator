@@ -14,6 +14,9 @@ app.use(express.static(__dirname + '/public'));
 app.get('/userDetails/:id', (req, res) => {
   res.sendFile(__dirname + '/public/userDetails.html');
 });
+app.get('/visitors', (req, res) => {
+  res.sendFile(__dirname + '/public/users.html');
+});
 app.use('/visitor-pass', express.static(__dirname + '/visitor-pass'));
 // Endpoint to handle saving visitor details
 app.post('/save-visitor-details', passController.saveVisitorDetails);

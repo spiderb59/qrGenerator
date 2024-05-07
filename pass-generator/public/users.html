@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>List of all visitors</title>
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+
+  <div class="container mt-3">
+    <h1>List of all visitors</h1>
+    <div class="input-group mb-3">
+      <input type="text" class="form-control" id="searchInput" placeholder="Search by name...">
+      <div class="input-group-append">
+        <button class="btn btn-outline-secondary" type="button" id="searchButton">Search</button>
+      </div>
+    </div>
+    <table class="table table-bordered table-striped">
+      <thead class="thead-light">
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Company</th>
+          <th>Email</th>
+          <th>Created Date <button id="sortDateBtn" class="btn btn-link">▲</button></th>
+          <th>Status <button id="sortStatusBtn" class="btn btn-link">▲</button></th>
+        </tr>
+      </thead>
+      <tbody id="visitorList">
+        <!-- Visitor details will be dynamically inserted here -->
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    window.onload = async function() {
+      try {
+        let visitors = []; // Initialize empty array for visitors
+
+        // Fetch all visitor details
+        const response = await fetch('/all-visitors');
+        visitors = await response.json();
+
+        // Get the table body to append visitor rows
+        const visitorList = document.getElementById('visitorList');
+
+        // Render visitor details
+        renderVisitors(visitors);
+
+        // Toggle sorting order for Date button when clicked
+        const sortDateBtn = document.getElementById('sortDateBtn');
+        sortDateBtn.addEventListener('click', () => {
+          toggleSortOrder(sortDateBtn);
+          sortVisitorsByDate();
+        });
+
+        // Toggle sorting order for Status button when clicked
+        const sortStatusBtn = document.getElementById('sortStatusBtn');
+        sortStatusBtn.addEventListener('click', () => {
+          toggleSortOrder(sortStatusBtn);
+          sortVisitorsByStatus();
+        });
+
+        // Add click event listener to search button
+        const searchButton = document.getElementById('searchButton');
+        searchButton.addEventListener('click', () => {
+          const searchInput = document.getElementById('searchInput').value.trim().toLowerCase();
+          const filteredVisitors = visitors.filter(visitor => visitor.name.toLowerCase().includes(searchInput));
+          renderVisitors(filteredVisitors);
+        });
+
+        // Function to toggle sorting order and update button text
+        function toggleSortOrder(button) {
+          const sortOrder = button.textContent.trim(); // Get current sorting order
+          button.textContent = sortOrder === '▲' ? '▼' : '▲'; // Toggle sorting order text
+        }
+
+        // Function to sort visitors by date
+        function sortVisitorsByDate() {
+          const sortOrder = sortDateBtn.textContent.trim(); // Get current sorting order
+          if (sortOrder === '▲') {
+            visitors.sort((a, b) => new Date(a.created_at) - new Date(b.created_at)); // Ascending order
+          } else {
+            visitors.sort((a, b) => new Date(b.created_at) - new Date(a.created_at)); // Descending order
+          }
+          renderVisitors(visitors); // Render sorted visitors
+        }
+
+        // Function to sort visitors by status
+        function sortVisitorsByStatus() {
+          const sortOrder = sortStatusBtn.textContent.trim(); // Get current sorting order
+          if (sortOrder === '▲') {
+            visitors.sort((a, b) => (a.created_at === b.created_at ? 0 : a.created_at < b.created_at ? -1 : 1)); // Ascending order
+          } else {
+            visitors.sort((a, b) => (a.created_at === b.created_at ? 0 : a.created_at > b.created_at ? -1 : 1)); // Descending order
+          }
+          renderVisitors(visitors); // Render sorted visitors
+        }
+
+        // Function to render visitor details in table rows
+        function renderVisitors(visitors) {
+          // Clear existing rows
+          visitorList.innerHTML = '';
+
+          // Get current date in UTC format
+          const currentDate = new Date().toISOString().split('T')[0];
+
+          // Loop through each visitor and create table rows
+          visitors.forEach(visitor => {
+            // Parse created_at date
+            const createdAtDate = visitor.created_at.split('T')[0];
+
+            // Calculate status based on the difference between created_at and current date
+            const status = createdAtDate === currentDate ? 'Active' : 'Expired';
+
+            const row = document.createElement('tr');
+            row.innerHTML = `
+              <td><a href="/userDetails/${visitor.id}">${visitor.id}</a></td>
+              <td>${visitor.name}</td>
+              <td>${visitor.company_name}</td>
+              <td>${visitor.email}</td>
+              <td>${visitor.created_at}</td>
+              <td>${status}</td> <!-- Display status dynamically -->
+            `;
+            visitorList.appendChild(row);
+          });
+        }
+
+      } catch (error) {
+        console.error('Error fetching visitor details:', error);
+        // Display error message if visitor details couldn't be fetched
+        const errorMessage = document.createElement('div');
+        errorMessage.classList.add('alert', 'alert-danger');
+        errorMessage.textContent = 'Error fetching visitor details. Please try again later.';
+        document.body.appendChild(errorMessage);
+      }
+    };
+  </script>
+
+  <!-- Bootstrap JS and jQuery (optional) -->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

@@ -38,6 +38,20 @@
     .table-responsive {
       overflow-x: auto;
     }
+    .status-label {
+      font-size: 14px;
+      font-weight: bold;
+      padding: 6px 12px;
+      border-radius: 4px;
+    }
+    .active-status {
+      color: #155724;
+      background-color: #d4edda;
+    }
+    .expired-status {
+      color: #721c24;
+      background-color: #f8d7da;
+    }
   </style>
 </head>
 <body>
@@ -65,11 +79,15 @@
             </tr>
             <tr>
               <th>Visitor Pass*</th>
-              <td id="visitorPass"></td>
+              <td><a id="visitorPassLink" href="#" target="_blank">View Pass</a></td>
             </tr>
             <tr>
               <th>Created Date</th>
               <td id="date"></td>
+            </tr>
+            <tr>
+              <th>Status</th>
+              <td id="status"></td>
             </tr>
           </tbody>
         </table>
@@ -92,8 +110,28 @@
         document.getElementById('companyName').textContent = userDetails.company_name;
         document.getElementById('phoneNumber').textContent = userDetails.phone;
         document.getElementById('visitorEmail').textContent = userDetails.email;
-        document.getElementById('visitorPass').textContent = userDetails.pass_path;
         document.getElementById('date').textContent = userDetails.created_at;
+
+       // Construct the full URL for the pass path
+const fullPassPath = `${window.location.origin}/${userDetails.pass_path}`;
+
+// Update visitor pass link
+const visitorPassLink = document.getElementById('visitorPassLink');
+visitorPassLink.href = fullPassPath;
+visitorPassLink.textContent = 'View Pass';
+
+
+        // Set status label based on current date and created date
+        const currentDate = new Date().toISOString().split('T')[0];
+        const createdDate = userDetails.created_at.split('T')[0];
+        const statusLabel = document.getElementById('status');
+        if (currentDate === createdDate) {
+          statusLabel.textContent = 'Active';
+          statusLabel.classList.add('status-label', 'active-status');
+        } else {
+          statusLabel.textContent = 'Expired';
+          statusLabel.classList.add('status-label', 'expired-status');
+        }
 
       } catch (error) {
         console.error('Error fetching user details:', error);
