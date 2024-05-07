@@ -56,15 +56,11 @@
 </head>
 <body>
   <div class="container">
-    <h1 class="mt-5 text-center">User Details</h1>
+    <h1 class="mt-5 text-center"><span id="visitorName"></span></h1>
     <div class="user-details">
       <div class="table-responsive">
         <table class="table table-bordered table-striped">
           <tbody>
-            <tr>
-              <th>Name of Visitor</th>
-              <td id="visitorName"></td>
-            </tr>
             <tr>
               <th>Name of Company</th>
               <td id="companyName"></td>
@@ -78,7 +74,7 @@
               <td id="visitorEmail"></td>
             </tr>
             <tr>
-              <th>Visitor Pass*</th>
+              <th>Visitor Pass</th>
               <td><a id="visitorPassLink" href="#" target="_blank">View Pass</a></td>
             </tr>
             <tr>
@@ -110,16 +106,23 @@
         document.getElementById('companyName').textContent = userDetails.company_name;
         document.getElementById('phoneNumber').textContent = userDetails.phone;
         document.getElementById('visitorEmail').textContent = userDetails.email;
-        document.getElementById('date').textContent = userDetails.created_at;
 
-       // Construct the full URL for the pass path
-const fullPassPath = `${window.location.origin}/${userDetails.pass_path}`;
+        // Parse the created date string into a Date object
+        const madeDate = new Date(userDetails.created_at);
 
-// Update visitor pass link
-const visitorPassLink = document.getElementById('visitorPassLink');
-visitorPassLink.href = fullPassPath;
-visitorPassLink.textContent = 'View Pass';
+        // Format the date using toLocaleString()
+        const formattedDate = madeDate.toLocaleString();
 
+        // Update the HTML element with the formatted date
+        document.getElementById('date').textContent = formattedDate;
+
+        // Construct the full URL for the pass path
+        const fullPassPath = `${window.location.origin}/${userDetails.pass_path}`;
+
+        // Update visitor pass link
+        const visitorPassLink = document.getElementById('visitorPassLink');
+        visitorPassLink.href = fullPassPath;
+        visitorPassLink.textContent = 'View Pass';
 
         // Set status label based on current date and created date
         const currentDate = new Date().toISOString().split('T')[0];

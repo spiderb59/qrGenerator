@@ -115,13 +115,18 @@
             // Calculate status based on the difference between created_at and current date
             const status = createdAtDate === currentDate ? 'Active' : 'Expired';
 
+            const madeDate = new Date(visitor.created_at);
+
+            // Format the date using toLocaleString()
+            const formattedDate = madeDate.toLocaleString();
+
             const row = document.createElement('tr');
             row.innerHTML = `
               <td><a href="/userDetails/${visitor.id}">${visitor.id}</a></td>
               <td>${visitor.name}</td>
               <td>${visitor.company_name}</td>
               <td>${visitor.email}</td>
-              <td>${visitor.created_at}</td>
+              <td>${formattedDate}</td>
               <td>${status}</td> <!-- Display status dynamically -->
             `;
             visitorList.appendChild(row);
