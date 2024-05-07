@@ -74,6 +74,10 @@
               <td id="visitorEmail"></td>
             </tr>
             <tr>
+              <th>Last Scanned</th>
+              <td id="lastScanned"></td>
+            </tr>
+            <tr>
               <th>Visitor Pass</th>
               <td><a id="visitorPassLink" href="#" target="_blank">View Pass</a></td>
             </tr>
@@ -106,6 +110,8 @@
         document.getElementById('companyName').textContent = userDetails.company_name;
         document.getElementById('phoneNumber').textContent = userDetails.phone;
         document.getElementById('visitorEmail').textContent = userDetails.email;
+        document.getElementById('lastScanned').textContent = userDetails.last_scanned;
+
 
         // Parse the created date string into a Date object
         const madeDate = new Date(userDetails.created_at);

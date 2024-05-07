@@ -18,11 +18,19 @@ app.get('/visitors', (req, res) => {
   res.sendFile(__dirname + '/public/users.html');
 });
 app.use('/visitor-pass', express.static(__dirname + '/visitor-pass'));
+
+
+
 // Endpoint to handle saving visitor details
 app.post('/save-visitor-details', passController.saveVisitorDetails);
 
-// Endpoint to handle fetching user details
-app.get('/user/:id', userController.getUserDetails);
+
+
+app.route('/user/:id')
+  .get(userController.getUserDetails)
+  .put(userController.updateUserDetails);
+
+
 //Enfpoint to handle fetching all user details
 app.get('/all-visitors', allUserControllers.getAllVisitorDetails);
 

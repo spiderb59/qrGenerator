@@ -12,7 +12,7 @@
   <div class="container mt-3">
     <h1>List of all visitors</h1>
     <div class="input-group mb-3">
-      <input type="text" class="form-control" id="searchInput" placeholder="Search by name...">
+      <input type="text" class="form-control" id="searchInput" placeholder="Search by id...">
       <div class="input-group-append">
         <button class="btn btn-outline-secondary" type="button" id="searchButton">Search</button>
       </div>
@@ -24,8 +24,11 @@
           <th>Name</th>
           <th>Company</th>
           <th>Email</th>
+          <th>Last Scanned</th>
+          <th>Scan Count</th>
           <th>Created Date <button id="sortDateBtn" class="btn btn-link">▲</button></th>
           <th>Status <button id="sortStatusBtn" class="btn btn-link">▲</button></th>
+          
         </tr>
       </thead>
       <tbody id="visitorList">
@@ -67,7 +70,7 @@
         const searchButton = document.getElementById('searchButton');
         searchButton.addEventListener('click', () => {
           const searchInput = document.getElementById('searchInput').value.trim().toLowerCase();
-          const filteredVisitors = visitors.filter(visitor => visitor.name.toLowerCase().includes(searchInput));
+          const filteredVisitors = visitors.filter(visitor => visitor.id.toLowerCase().includes(searchInput));
           renderVisitors(filteredVisitors);
         });
 
@@ -126,6 +129,8 @@
               <td>${visitor.name}</td>
               <td>${visitor.company_name}</td>
               <td>${visitor.email}</td>
+              <td>${visitor.last_scanned}</td>
+              <td>${visitor.scan_count}</td>
               <td>${formattedDate}</td>
               <td>${status}</td> <!-- Display status dynamically -->
             `;
