@@ -2,6 +2,8 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const passController = require('./controllers/passController');
 const userController = require('./controllers/userController'); // Import the new controller
+const allUserControllers = require('./controllers/allUserControllers'); // Import the new controller
+
 const app = express();
 const port = 8122;
 
@@ -18,6 +20,8 @@ app.post('/save-visitor-details', passController.saveVisitorDetails);
 
 // Endpoint to handle fetching user details
 app.get('/user/:id', userController.getUserDetails);
+//Enfpoint to handle fetching all user details
+app.get('/all-visitors', allUserControllers.getAllVisitorDetails);
 
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);

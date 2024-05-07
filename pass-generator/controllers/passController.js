@@ -17,9 +17,10 @@ passController.saveVisitorDetails = async (req, res) => {
     }
 
     // Generate QR code image
-    var qr_url = windows.location.origin;
+   var qr_url = 'localhost:8122';
     const qr_png = qr.imageSync(`${qr_url}/userDetails/${id}`, { type: 'png' });
     const qrImageBase64 = qr_png.toString('base64');
+
 
     // Create visitor pass HTML content with embedded QR code
     const htmlContent = `
