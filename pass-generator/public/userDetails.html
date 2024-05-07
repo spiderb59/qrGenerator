@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Details</title>
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f8f9fa;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .user-details {
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      margin-top: 20px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+    }
+    th, td {
+      padding: 12px;
+      border-bottom: 1px solid #ddd;
+    }
+    th {
+      background-color: #f2f2f2;
+      text-transform: uppercase;
+    }
+    .table-responsive {
+      overflow-x: auto;
+    }
+    .status-label {
+      font-size: 14px;
+      font-weight: bold;
+      padding: 6px 12px;
+      border-radius: 4px;
+    }
+    .active-status {
+      color: #155724;
+      background-color: #d4edda;
+    }
+    .expired-status {
+      color: #721c24;
+      background-color: #f8d7da;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1 class="mt-5 text-center"><span id="visitorName"></span></h1>
+    <div class="user-details">
+      <div class="table-responsive">
+        <table class="table table-bordered table-striped">
+          <tbody>
+            <tr>
+              <th>Name of Company</th>
+              <td id="companyName"></td>
+            </tr>
+            <tr>
+              <th>Visitor Phone Number</th>
+              <td id="phoneNumber"></td>
+            </tr>
+            <tr>
+              <th>Visitor Email</th>
+              <td id="visitorEmail"></td>
+            </tr>
+            <tr>
+              <th>Visitor Pass</th>
+              <td><a id="visitorPassLink" href="#" target="_blank">View Pass</a></td>
+            </tr>
+            <tr>
+              <th>Created Date</th>
+              <td id="date"></td>
+            </tr>
+            <tr>
+              <th>Status</th>
+              <td id="status"></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    window.onload = async function() {
+      // Extract user ID from the URL pathname
+      const userId = window.location.pathname.split('/').pop();
+
+      try {
+        // Fetch user details
+        const response = await fetch(`/user/${userId}`);
+        const userDetails = await response.json();
+
+        // Update user details in the table
+        document.getElementById('visitorName').textContent = userDetails.name;
+        document.getElementById('companyName').textContent = userDetails.company_name;
+        document.getElementById('phoneNumber').textContent = userDetails.phone;
+        document.getElementById('visitorEmail').textContent = userDetails.email;
+
+        // Parse the created date string into a Date object
+        const madeDate = new Date(userDetails.created_at);
+
+        // Format the date using toLocaleString()
+        const formattedDate = madeDate.toLocaleString();
+
+        // Update the HTML element with the formatted date
+        document.getElementById('date').textContent = formattedDate;
+
+        // Construct the full URL for the pass path
+        const fullPassPath = `${window.location.origin}/${userDetails.pass_path}`;
+
+        // Update visitor pass link
+        const visitorPassLink = document.getElementById('visitorPassLink');
+        visitorPassLink.href = fullPassPath;
+        visitorPassLink.textContent = 'View Pass';
+
+        // Set status label based on current date and created date
+        const currentDate = new Date().toISOString().split('T')[0];
+        const createdDate = userDetails.created_at.split('T')[0];
+        const statusLabel = document.getElementById('status');
+        if (currentDate === createdDate) {
+          statusLabel.textContent = 'Active';
+          statusLabel.classList.add('status-label', 'active-status');
+        } else {
+          statusLabel.textContent = 'Expired';
+          statusLabel.classList.add('status-label', 'expired-status');
+        }
+
+      } catch (error) {
+        console.error('Error fetching user details:', error);
+        // Display error message if user details couldn't be fetched
+        const errorMessage = document.createElement('div');
+        errorMessage.classList.add('alert', 'alert-danger');
+        errorMessage.textContent = 'Error fetching user details. Please try again later.';
+        document.body.appendChild(errorMessage);
+      }
+    };
+  </script>
+
+  <!-- Bootstrap JS and jQuery (optional) -->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
