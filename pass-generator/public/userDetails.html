@@ -110,7 +110,11 @@
         document.getElementById('companyName').textContent = userDetails.company_name;
         document.getElementById('phoneNumber').textContent = userDetails.phone;
         document.getElementById('visitorEmail').textContent = userDetails.email;
-        document.getElementById('lastScanned').textContent = userDetails.last_scanned;
+        const sacendDate = new Date(userDetails.last_scanned);
+
+                // Format the date using toLocaleString()
+        const formattedScanDate = sacendDate.toLocaleString();
+        document.getElementById('lastScanned').textContent = formattedScanDate
 
 
         // Parse the created date string into a Date object

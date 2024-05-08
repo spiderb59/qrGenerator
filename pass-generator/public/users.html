@@ -11,6 +11,7 @@
 
   <div class="container mt-3">
     <h1>List of all visitors</h1>
+    <a href="/"><button class="btn btn-success">Add New Visitor</button></a>
     <div class="input-group mb-3">
       <input type="text" class="form-control" id="searchInput" placeholder="Search by id...">
       <div class="input-group-append">
@@ -114,14 +115,19 @@
           visitors.forEach(visitor => {
             // Parse created_at date
             const createdAtDate = visitor.created_at.split('T')[0];
+            const scannedDate = visitor.created_at.split('T')[0];
+
 
             // Calculate status based on the difference between created_at and current date
             const status = createdAtDate === currentDate ? 'Active' : 'Expired';
 
             const madeDate = new Date(visitor.created_at);
+            const scanDate = new Date(visitor.last_scanned);
 
             // Format the date using toLocaleString()
             const formattedDate = madeDate.toLocaleString();
+            const formattedScannedDate = scanDate.toLocaleString();
+
 
             const row = document.createElement('tr');
             row.innerHTML = `
@@ -129,7 +135,7 @@
               <td>${visitor.name}</td>
               <td>${visitor.company_name}</td>
               <td>${visitor.email}</td>
-              <td>${visitor.last_scanned}</td>
+              <td>${formattedScannedDate}</td>
               <td>${visitor.scan_count}</td>
               <td>${formattedDate}</td>
               <td>${status}</td> <!-- Display status dynamically -->
