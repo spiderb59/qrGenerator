@@ -1,59 +1,62 @@
 const pool = require('../config/database');
 
+/**
+ * Fetches user details by their ID from the database.
+ *
+ * @param {string} id - Unique identifier for the user.
+ * @returns {Promise<object>} An object containing user details or null if not found.
+ */
 async function getUserDetailsById(id) {
   try {
     const query = `
       SELECT * FROM visitor_details WHERE id = ?
     `;
-    const [rows, fields] = await pool.query(query, [id]);
-    return rows[0]; // Assuming id is unique, so only one row will be returned
-    
+    const [rows] = await pool.query(query, [id]);
+    return rows[0] || null; // Return user data or null if not found
   } catch (error) {
     console.error('Error fetching user details:', error);
     throw error; // Propagate the error to the caller
   }
 }
 
+/**
+ * Updates user's last scanned time and scan count by 1.
+ *
+ * @param {string} id - Unique identifier for the user.
+ * @returns {Promise<void>}
+ */
 async function updateUserDetails(id) {
   try {
-    // Get the current date and time
-    const options = { timeZone: 'Asia/Tokyo' };
-    const now = new Date();
-    const formattedDateTime = now.toLocaleString('en-US', options);
-      
-    // Extract date and time parts
-    const [datePart, timePart] = formattedDateTime.split(', ');
-    const [month, day, year] = datePart.split('/');
-    const [hoursMinutesSeconds, amPm] = timePart.split(' ');
-    const [hours, minutes, seconds] = hoursMinutesSeconds.split(':');
+    // Prepare data with Japan timezone-aware timestamp
+    const formattedDateTime = await getJapanDateTimeString();
 
-    // Convert 12-hour time to 24-hour time
-    let hour24 = parseInt(hours, 10);
-    if (amPm === 'PM') {
-      hour24 += 12;
-    }
-      
-    // Construct MySQL-compatible datetime string
-    const mysqlFormattedDateTime = `${year}:${month}:${day} ${hour24}:${minutes}:${seconds}`;
-    
     const query = `
       UPDATE visitor_details SET last_scanned = ?, scan_count = scan_count + 1 WHERE id = ?
     `;
-    
-    await pool.query(query, [mysqlFormattedDateTime, id]);
-    
+
+    await pool.query(query, [formattedDateTime, id]);
+
     console.log('QR Code Scanned'); // Log success message
-    
   } catch (error) {
     console.error('Error updating user details:', error);
     throw error; // Propagate the error to the caller
   }
 }
 
+/**
+ * Generates a formatted date and time string in Japan timezone.
+ *
+ * @returns {Promise<string>} The formatted date and time string.
+ */
+async function getJapanDateTimeString() {
+  const options = { timeZone: 'Asia/Tokyo' };
+  const now = new Date();
+  return now.toISOString().slice(0, 19).replace('T', ' ');
+}
 
 
 
 module.exports = {
   getUserDetailsById,
-  updateUserDetails
+  updateUserDetails,
 };
