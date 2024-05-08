@@ -4,15 +4,15 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>List of all visitors</title>
-  <!-- Bootstrap CSS -->
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
 
   <div class="container mt-3">
     <h1>List of all visitors</h1>
+    <a href="/"><button class="btn btn-success">Add New Visitor</button></a>
     <div class="input-group mb-3">
-      <input type="text" class="form-control" id="searchInput" placeholder="Search by name...">
+      <input type="text" class="form-control" id="searchInput" placeholder="Search by id...">
       <div class="input-group-append">
         <button class="btn btn-outline-secondary" type="button" id="searchButton">Search</button>
       </div>
@@ -20,129 +20,120 @@
     <table class="table table-bordered table-striped">
       <thead class="thead-light">
         <tr>
-          <th>ID</th>
           <th>Name</th>
           <th>Company</th>
+          <th>Pass</th>
           <th>Email</th>
+          <th>Last Scanned</th>
+          <th>Scan Count</th>
           <th>Created Date <button id="sortDateBtn" class="btn btn-link">▲</button></th>
           <th>Status <button id="sortStatusBtn" class="btn btn-link">▲</button></th>
+          
         </tr>
       </thead>
       <tbody id="visitorList">
-        <!-- Visitor details will be dynamically inserted here -->
+
       </tbody>
     </table>
   </div>
 
-  <script>
-    window.onload = async function() {
-      try {
-        let visitors = []; // Initialize empty array for visitors
+<script>
+let visitor;
+window.onload = async function () {
+  try {
+    const response = await fetch('/all-visitors');
+    visitors = await response.json();
+    const visitorList = document.getElementById('visitorList');
 
-        // Fetch all visitor details
-        const response = await fetch('/all-visitors');
-        visitors = await response.json();
+    attachSortListeners(sortVisitors, visitors);
+    document.getElementById('searchButton').addEventListener('click', handleSearch);
 
-        // Get the table body to append visitor rows
-        const visitorList = document.getElementById('visitorList');
+    renderVisitors(visitors);
+  } catch (error) {
+    console.error('Error fetching visitor details:', error);
+    displayErrorMessage();
+  }
+};
 
-        // Render visitor details
-        renderVisitors(visitors);
+function attachSortListeners(sortFunction, visitors) {
+  document.getElementById('sortDateBtn').addEventListener('click', () => {
+    toggleSortOrder(document.getElementById('sortDateBtn'));
+    sortFunction(visitors, 'created_at');
+  });
 
-        // Toggle sorting order for Date button when clicked
-        const sortDateBtn = document.getElementById('sortDateBtn');
-        sortDateBtn.addEventListener('click', () => {
-          toggleSortOrder(sortDateBtn);
-          sortVisitorsByDate();
-        });
+  document.getElementById('sortStatusBtn').addEventListener('click', () => {
+    toggleSortOrder(document.getElementById('sortStatusBtn'));
+    sortFunction(visitors, 'scan_count');
+  });
+}
 
-        // Toggle sorting order for Status button when clicked
-        const sortStatusBtn = document.getElementById('sortStatusBtn');
-        sortStatusBtn.addEventListener('click', () => {
-          toggleSortOrder(sortStatusBtn);
-          sortVisitorsByStatus();
-        });
+function toggleSortOrder(button) {
+  button.textContent = button.textContent === '▲' ? '▼' : '▲';
+}
 
-        // Add click event listener to search button
-        const searchButton = document.getElementById('searchButton');
-        searchButton.addEventListener('click', () => {
-          const searchInput = document.getElementById('searchInput').value.trim().toLowerCase();
-          const filteredVisitors = visitors.filter(visitor => visitor.name.toLowerCase().includes(searchInput));
-          renderVisitors(filteredVisitors);
-        });
+function sortVisitors(data, key) {
+  const sortOrder = document.getElementById(key + 'Btn').textContent.trim();
+  data.sort((a, b) => (sortOrder === '▲' ? a[key] - b[key] : b[key] - a[key]));
+  renderVisitors(data);
+}
 
-        // Function to toggle sorting order and update button text
-        function toggleSortOrder(button) {
-          const sortOrder = button.textContent.trim(); // Get current sorting order
-          button.textContent = sortOrder === '▲' ? '▼' : '▲'; // Toggle sorting order text
-        }
+function handleSearch() {
+  const searchInput = document.getElementById('searchInput').value.trim().toLowerCase();
+  if (!searchInput) {
+    renderVisitors(visitors);
+    return;
+  }
+  const filteredVisitors = visitors.filter(visitor => {
+    return visitor.id.toLowerCase().includes(searchInput) ||
+           visitor.name.toLowerCase().includes(searchInput) ||
+           visitor.company_name.toLowerCase().includes(searchInput) ||
+           visitor.phone.toLowerCase().includes(searchInput);
+  });
+  renderVisitors(filteredVisitors);
+}
 
-        // Function to sort visitors by date
-        function sortVisitorsByDate() {
-          const sortOrder = sortDateBtn.textContent.trim(); // Get current sorting order
-          if (sortOrder === '▲') {
-            visitors.sort((a, b) => new Date(a.created_at) - new Date(b.created_at)); // Ascending order
-          } else {
-            visitors.sort((a, b) => new Date(b.created_at) - new Date(a.created_at)); // Descending order
-          }
-          renderVisitors(visitors); // Render sorted visitors
-        }
+function renderVisitors(visitors) {
+  visitorList.innerHTML = '';
+  const currentDate = new Date().toISOString().split('T')[0];
 
-        // Function to sort visitors by status
-        function sortVisitorsByStatus() {
-          const sortOrder = sortStatusBtn.textContent.trim(); // Get current sorting order
-          if (sortOrder === '▲') {
-            visitors.sort((a, b) => (a.created_at === b.created_at ? 0 : a.created_at < b.created_at ? -1 : 1)); // Ascending order
-          } else {
-            visitors.sort((a, b) => (a.created_at === b.created_at ? 0 : a.created_at > b.created_at ? -1 : 1)); // Descending order
-          }
-          renderVisitors(visitors); // Render sorted visitors
-        }
+  visitors.forEach(visitor => {
+    const createdAtDate = visitor.created_at.split('T')[0];
+    const scannedDate = visitor.last_scanned ? new Date(visitor.last_scanned).toLocaleString() : '';
+    const status = determineStatus(currentDate, visitor.created_at, visitor.scan_count);
 
-        // Function to render visitor details in table rows
-        function renderVisitors(visitors) {
-          // Clear existing rows
-          visitorList.innerHTML = '';
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <td>${visitor.name}</td>
+      <td>${visitor.company_name}</td>
+      <td><a href="/visitor-pass/${visitor.id}.pdf" target="_blank">${visitor.id}.pdf</a></td>
+      <td>${visitor.email}</td>
+      <td>${scannedDate}</td>
+      <td>${visitor.scan_count}</td>
+      <td>${new Date(visitor.created_at).toLocaleString()}</td>
+      <td >${status}</td>
+    `;
+    visitorList.appendChild(row);
+  });
+}
 
-          // Get current date in UTC format
-          const currentDate = new Date().toISOString().split('T')[0];
+function determineStatus(currentDate, createdAt, scanCount) {
+  if (currentDate > createdAt) {
+    return 'Expired';
+  } else if (scanCount > 5) {
+    return 'Limit Exceeded';
+  } else {
+    return 'Active';
+  }
+}
 
-          // Loop through each visitor and create table rows
-          visitors.forEach(visitor => {
-            // Parse created_at date
-            const createdAtDate = visitor.created_at.split('T')[0];
+function displayErrorMessage() {
+  const errorMessage = document.createElement('div');
+  errorMessage.classList.add('alert', 'alert-danger');
+  errorMessage.textContent = 'Error fetching visitor details. Please try again later.';
+  document.body.appendChild(errorMessage);
+}
+</script>
 
-            // Calculate status based on the difference between created_at and current date
-            const status = createdAtDate === currentDate ? 'Active' : 'Expired';
-
-            const madeDate = new Date(visitor.created_at);
-
-            // Format the date using toLocaleString()
-            const formattedDate = madeDate.toLocaleString();
-
-            const row = document.createElement('tr');
-            row.innerHTML = `
-              <td><a href="/userDetails/${visitor.id}">${visitor.id}</a></td>
-              <td>${visitor.name}</td>
-              <td>${visitor.company_name}</td>
-              <td>${visitor.email}</td>
-              <td>${formattedDate}</td>
-              <td>${status}</td> <!-- Display status dynamically -->
-            `;
-            visitorList.appendChild(row);
-          });
-        }
-
-      } catch (error) {
-        console.error('Error fetching visitor details:', error);
-        // Display error message if visitor details couldn't be fetched
-        const errorMessage = document.createElement('div');
-        errorMessage.classList.add('alert', 'alert-danger');
-        errorMessage.textContent = 'Error fetching visitor details. Please try again later.';
-        document.body.appendChild(errorMessage);
-      }
-    };
-  </script>
 
   <!-- Bootstrap JS and jQuery (optional) -->
   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>

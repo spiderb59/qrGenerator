@@ -17,7 +17,7 @@ passController.saveVisitorDetails = async (req, res) => {
     }
 
     // Generate QR code image
-    const qr_png = qr.imageSync(`http://localhost:8122/userDetails?id=${id}`, { type: 'png' });
+    const qr_png = qr.imageSync(`http://192.168.11.65:8122/userDetails/${id}`, { type: 'png' });
     const qrImageBase64 = qr_png.toString('base64');
 
 

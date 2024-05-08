@@ -52,6 +52,10 @@
       color: #721c24;
       background-color: #f8d7da;
     }
+    .limit-exceeded-status {
+      color: #721c24;
+      background-color: #f8d7da;
+    }
   </style>
 </head>
 <body>
@@ -91,61 +95,80 @@
     </div>
   </div>
 
-  <script>
-    window.onload = async function() {
-      // Extract user ID from the URL pathname
-      const userId = window.location.pathname.split('/').pop();
+<script>
+window.onload = async function () {
+  try {
+    const userId = window.location.pathname.split('/').pop();
+    const response = await fetch(`/user/${userId}`);
+    const userDetails = await response.json();
 
-      try {
-        // Fetch user details
-        const response = await fetch(`/user/${userId}`);
-        const userDetails = await response.json();
+    updateUserDetails(userDetails);
+  } catch (error) {
+    console.error('Error fetching user details:', error);
+    displayErrorMessage();
+  }
+};
 
-        // Update user details in the table
-        document.getElementById('visitorName').textContent = userDetails.name;
-        document.getElementById('companyName').textContent = userDetails.company_name;
-        document.getElementById('phoneNumber').textContent = userDetails.phone;
-        document.getElementById('visitorEmail').textContent = userDetails.email;
+function updateUserDetails(userDetails) {
+  const visitorName = document.getElementById('visitorName');
+  const companyName = document.getElementById('companyName');
+  const phoneNumber = document.getElementById('phoneNumber');
+  const visitorEmail = document.getElementById('visitorEmail');
+  const dateElement = document.getElementById('date');
+  const visitorPassLink = document.getElementById('visitorPassLink');
+  const statusLabel = document.getElementById('status');
 
-        // Parse the created date string into a Date object
-        const madeDate = new Date(userDetails.created_at);
+  // Update content directly using textContent
+  visitorName.textContent = userDetails.name;
+  companyName.textContent = userDetails.company_name;
+  phoneNumber.textContent = userDetails.phone;
+  visitorEmail.textContent = userDetails.email;
 
-        // Format the date using toLocaleString()
-        const formattedDate = madeDate.toLocaleString();
+  const formattedDate = new Date(userDetails.created_at).toLocaleString();
+  dateElement.textContent = formattedDate;
 
-        // Update the HTML element with the formatted date
-        document.getElementById('date').textContent = formattedDate;
+  const fullPassPath = `${window.location.origin}/${userDetails.pass_path}`;
+  visitorPassLink.href = fullPassPath;
+  visitorPassLink.textContent = 'View Pass';
 
-        // Construct the full URL for the pass path
-        const fullPassPath = `${window.location.origin}/${userDetails.pass_path}`;
+  const currentDate = new Date().toISOString().split('T')[0];
+  const createdDate = userDetails.created_at.split('T')[0];
+  const status = determineStatus(currentDate, createdDate, userDetails.scan_count);
 
-        // Update visitor pass link
-        const visitorPassLink = document.getElementById('visitorPassLink');
-        visitorPassLink.href = fullPassPath;
-        visitorPassLink.textContent = 'View Pass';
+  statusLabel.textContent = status;
+  statusLabel.classList.add('status-label', getStatusClass(status));
+}
 
-        // Set status label based on current date and created date
-        const currentDate = new Date().toISOString().split('T')[0];
-        const createdDate = userDetails.created_at.split('T')[0];
-        const statusLabel = document.getElementById('status');
-        if (currentDate === createdDate) {
-          statusLabel.textContent = 'Active';
-          statusLabel.classList.add('status-label', 'active-status');
-        } else {
-          statusLabel.textContent = 'Expired';
-          statusLabel.classList.add('status-label', 'expired-status');
-        }
+function determineStatus(currentDate, createdDate, scanCount) {
+  if (currentDate > createdDate) {
+    return 'Expired';
+  } else if (scanCount > 5) {
+    return 'Limit Exceeded';
+  } else {
+    return 'Active';
+  }
+}
 
-      } catch (error) {
-        console.error('Error fetching user details:', error);
-        // Display error message if user details couldn't be fetched
-        const errorMessage = document.createElement('div');
-        errorMessage.classList.add('alert', 'alert-danger');
-        errorMessage.textContent = 'Error fetching user details. Please try again later.';
-        document.body.appendChild(errorMessage);
-      }
-    };
-  </script>
+function getStatusClass(status) {
+  switch (status) {
+    case 'Limit Exceeded':
+      return 'limit-exceeded-status';
+    case 'Expired':
+      return 'expired-status';
+    default:
+      return 'active-status';
+  }
+}
+
+function displayErrorMessage() {
+  const errorMessage = document.createElement('div');
+  errorMessage.classList.add('alert', 'alert-danger');
+  errorMessage.textContent = 'Error fetching user details. Please try again later.';
+  document.body.appendChild(errorMessage);
+}
+
+
+</script>
 
   <!-- Bootstrap JS and jQuery (optional) -->
   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
