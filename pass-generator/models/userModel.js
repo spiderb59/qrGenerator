@@ -42,7 +42,7 @@ async function updateUserDetails(id) {
     
     await pool.query(query, [mysqlFormattedDateTime, id]);
     
-    console.log('Successfully updated user details'); // Log success message
+    console.log('QR Code Scanned'); // Log success message
     
   } catch (error) {
     console.error('Error updating user details:', error);

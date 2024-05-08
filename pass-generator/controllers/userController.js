@@ -11,7 +11,14 @@ userController.getUserDetails = async (req, res) => {
     if (!userDetails) {
       return res.status(404).json({ message: 'User not found' });
     }
-    await userModel.updateUserDetails(id);
+    const userAgent = req.headers['user-agent'];
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent);
+
+    // If the request is not  coming from a mobile device, call updateUserDetails
+    if (!isMobile) {
+      // Update user details with current date and time and increase scan count by 1
+      await userModel.updateUserDetails(id);
+    }
     // Send user details as JSON response
     res.json(userDetails);
   } catch (error) {
@@ -23,7 +30,6 @@ userController.getUserDetails = async (req, res) => {
 // Function to handle updating user details when QR code is scanned
 userController.updateUserDetails= async (req, res) => {
   try {
-    console.log('Updating user details...');
     const id = req.params.id;
     // Fetch user details from the userModel
     let userDetails = await userModel.getUserDetailsById(id);
@@ -37,6 +43,7 @@ userController.updateUserDetails= async (req, res) => {
     // Check if scan count exceeds 5
     if (userDetails.scanCount > 5) {
       userDetails.scanLimitReached = true;
+      userDetails.status = "Expired"; 
     }
 
     // Save updated user details to the userModel
