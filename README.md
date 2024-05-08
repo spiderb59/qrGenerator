@@ -3,9 +3,11 @@
 This is a visitor pass generator embedded with QR generation which holds the data for visitor.
 
 ### Completion till now; 
-(May 2,2024)
+(May 8,2024)
 1. Data can be inserted via form
 2. The pass will be generated as pdf and stored in folders.
+3. The visitor details can be viewd.
+4. Expiration and Limit Exceded features added. 
 
 ### Prerequisites: 
 1. Node.js and npm installed on your machine
@@ -18,8 +20,9 @@ For now:
 1. Clone the repo or download as zip. 
 2. Go to directory
 3. npm install (To install depedencies)
-4. Create Database and edit config/database.js for database configuration.
-5. Create a table (Only one table till date, May 2, 2024)
+4. Change path of your QR URL in passController.js line no 20. 
+6. Create Database and edit config/database.js for database configuration.
+7. Create a table
 ```sql
 CREATE TABLE visitor_details (
     id VARCHAR(255) PRIMARY KEY,
