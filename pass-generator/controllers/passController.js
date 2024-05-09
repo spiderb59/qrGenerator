@@ -8,7 +8,7 @@ passController.saveVisitorDetails = async (req, res) => {
   try {
     const { id, name, company_name, phone, email } = req.body;
     const pass_path = `visitor-pass/${id}.pdf`;
-
+    
     // Save visitor details to the database
     const saveResult = await db.saveVisitorDetails(id, name, company_name, phone, email, pass_path);
     if (!saveResult.success) {

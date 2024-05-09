@@ -39,7 +39,7 @@ async function saveVisitorDetails(id, name, companyName, phone, email, passPath)
 async function getJapanDateTimeString() {
   const options = { timeZone: 'Asia/Tokyo' };
   const now = new Date();
-  return now.toLocaleString('en-US', options);
+  return new Date().toISOString().slice(0, 19).replace('T', ' ');
 }
 
 module.exports = {
