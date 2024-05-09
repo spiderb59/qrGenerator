@@ -9,20 +9,21 @@ const pool = require('../config/database');
  * @param {string} phone - Visitor's phone number.
  * @param {string} email - Visitor's email address.
  * @param {string} passPath - Path to the visitor's pass (optional).
+ * @param {string} visit_date - Path to the visitor's pass (optional).
  * @returns {Promise<object>} An object containing success status and message.
  */
-async function saveVisitorDetails(id, name, companyName, phone, email, passPath) {
+async function saveVisitorDetails(id, name, companyName, phone, email, passPath,visit_date) {
   try {
     // Prepare data with Japan timezone-aware timestamp
     const formattedDateTime = await getJapanDateTimeString();
     const [mysqlFormattedDateTime] = formattedDateTime.split(' ');
 
     const query = `
-      INSERT INTO visitor_details (id, name, company_name, phone, email, created_at, pass_path)
-      VALUES (?, ?, ?, ?, ?, ?, ?)
+      INSERT INTO visitor_details (id, name, company_name, phone, email, created_at, pass_path,visit_date)
+      VALUES (?, ?, ?, ?, ?, ?, ?,?)
     `;
 
-    await pool.query(query, [id, name, companyName, phone, email, mysqlFormattedDateTime, passPath]);
+    await pool.query(query, [id, name, companyName, phone, email, mysqlFormattedDateTime, passPath, visit_date]);
 
     return { success: true, message: 'Visitor details saved successfully.' };
   } catch (error) {
