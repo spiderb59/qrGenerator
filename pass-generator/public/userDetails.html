@@ -52,8 +52,8 @@
       color: #721c24;
       background-color: #f8d7da;
     }
-    .limit-exceeded-status {
-      color: #721c24;
+    .early-status{
+      color:  #721c24;
       background-color: #f8d7da;
     }
   </style>
@@ -120,7 +120,7 @@ function updateUserDetails(userDetails) {
   const visitorEmail = document.getElementById('visitorEmail');
   const dateElement = document.getElementById('date');
   const visitorPassLink = document.getElementById('visitorPassLink');
-  const visitDate = document.getElementById('visit-date');
+  const visitDates = document.getElementById('visit-date');
   const statusLabel = document.getElementById('status');
 
   // Update content directly using textContent
@@ -131,7 +131,8 @@ function updateUserDetails(userDetails) {
 
 
   const formattedVisitDate = new Date(userDetails.visit_date).toLocaleString();
-  visitDate.textContent = formattedVisitDate;
+  visitDates.textContent = formattedVisitDate;
+  visitDate = userDetails.visit_date;
 
   const formattedDate = new Date(userDetails.created_at).toLocaleString();
   dateElement.textContent = formattedDate;
@@ -142,17 +143,18 @@ function updateUserDetails(userDetails) {
 
   const currentDate = new Date().toISOString().split('T')[0];
   const createdDate = userDetails.created_at.split('T')[0];
-  const status = determineStatus(currentDate, createdDate, userDetails.scan_count);
+  const status = determineStatus(visitDate,currentDate, createdDate, userDetails.scan_count);
 
   statusLabel.textContent = status;
   statusLabel.classList.add('status-label', getStatusClass(status));
 }
 
-function determineStatus(currentDate, createdDate, scanCount) {
-  if (currentDate > createdDate) {
+function determineStatus(visitDate, currentDate, createdAt) {
+  visitDate = visitDate.split('T')[0];
+  if (visitDate > currentDate) {
+    return 'Not a vist day';
+  } else if (currentDate > visitDate) {
     return 'Expired';
-  } else if (scanCount > 5) {
-    return 'Limit Exceeded';
   } else {
     return 'Active';
   }
@@ -160,10 +162,10 @@ function determineStatus(currentDate, createdDate, scanCount) {
 
 function getStatusClass(status) {
   switch (status) {
-    case 'Limit Exceeded':
-      return 'limit-exceeded-status';
-    case 'Expired':
+    case 'Not a vist day':
       return 'expired-status';
+      case 'Early':
+      return 'early-status';
     default:
       return 'active-status';
   }

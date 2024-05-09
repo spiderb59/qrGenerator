@@ -29,7 +29,6 @@
           <th>Visit Date</th>
           <th>Created Date <button id="sortDateBtn" class="btn btn-link"></button></th>
           <th>Status <button id="sortStatusBtn" class="btn btn-link"></button></th>
-          
         </tr>
       </thead>
       <tbody id="visitorList">
@@ -98,9 +97,10 @@ function renderVisitors(visitors) {
   const currentDate = new Date().toISOString().split('T')[0];
 
   visitors.forEach(visitor => {
+    visitDate = visitor.visit_date
     const createdAtDate = visitor.created_at.split('T')[0];
     const scannedDate = visitor.last_scanned ? new Date(visitor.last_scanned).toLocaleString() : '';
-    const status = determineStatus(currentDate, visitor.created_at, visitor.scan_count);
+    const status = determineStatus(visitDate,currentDate, visitor.created_at, visitor.scan_count);
 
     const row = document.createElement('tr');
     row.innerHTML = `
@@ -129,11 +129,12 @@ function formatDate(dateTimeString) {
 }
 
 
-function determineStatus(currentDate, createdAt, scanCount) {
-  if (currentDate > createdAt) {
+function determineStatus(visitDate, currentDate, createdAt) {
+  visitDate = visitDate.split('T')[0];
+  if (visitDate > currentDate) {
+    return 'Not a visit day';
+  } else if (currentDate > visitDate) {
     return 'Expired';
-  } else if (scanCount > 5) {
-    return 'Limit Exceeded';
   } else {
     return 'Active';
   }

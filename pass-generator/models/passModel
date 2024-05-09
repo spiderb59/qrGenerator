@@ -16,16 +16,16 @@ async function saveVisitorDetails(id, name, companyName, phone, email, passPath,
   try {
     // Prepare data with Japan timezone-aware timestamp
     const formattedDateTime = await getJapanDateTimeString();
-    const [mysqlFormattedDateTime] = formattedDateTime.split(' ');
 
     const query = `
       INSERT INTO visitor_details (id, name, company_name, phone, email, created_at, pass_path,visit_date)
       VALUES (?, ?, ?, ?, ?, ?, ?,?)
     `;
 
-    await pool.query(query, [id, name, companyName, phone, email, mysqlFormattedDateTime, passPath, visit_date]);
+    await pool.query(query, [id, name, companyName, phone, email, formattedDateTime, passPath, visit_date]);
 
     return { success: true, message: 'Visitor details saved successfully.' };
+
   } catch (error) {
     console.error('Error saving visitor details:', error);
     return { success: false, message: 'Failed to save visitor details.' };
@@ -40,7 +40,13 @@ async function saveVisitorDetails(id, name, companyName, phone, email, passPath,
 async function getJapanDateTimeString() {
   const options = { timeZone: 'Asia/Tokyo' };
   const now = new Date();
-  return new Date().toISOString().slice(0, 19).replace('T', ' ');
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, '0');
+  const day = String(now.getDate()).padStart(2, '0');
+  const hours = String(now.getHours()).padStart(2, '0');
+  const minutes = String(now.getMinutes()).padStart(2, '0');
+  const seconds = String(now.getSeconds()).padStart(2, '0');
+  return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 }
 
 module.exports = {
