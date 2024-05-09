@@ -6,11 +6,11 @@ const passController = {};
 
 passController.saveVisitorDetails = async (req, res) => {
   try {
-    const { id, name, company_name, phone, email } = req.body;
+    const { id, name, company_name, phone, email,visit_date } = req.body;
     const pass_path = `visitor-pass/${id}.pdf`;
     
     // Save visitor details to the database
-    const saveResult = await db.saveVisitorDetails(id, name, company_name, phone, email, pass_path);
+    const saveResult = await db.saveVisitorDetails(id, name, company_name, phone, email, pass_path,visit_date);
     if (!saveResult.success) {
       // If saving to the database fails, return an error response
       return res.status(500).json({ message: saveResult.message });
@@ -55,6 +55,7 @@ passController.saveVisitorDetails = async (req, res) => {
           <p>Phone Number: ${phone}</p>
           <p>Email: ${email}</p>
           <p>Date Issued: ${new Date().toLocaleString()}</p>
+          <p>Date of Visit: ${visit_date.slice(0, 19).replace('T', ' ')}</p>
           <img src="data:image/png;base64,${qrImageBase64}" alt="QR Code" />
         </body>
       </html>

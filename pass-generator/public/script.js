@@ -3,8 +3,9 @@ function generateQR() {
   var qrCompany = document.getElementById('visitor-company').value.trim();
   var qrPhoneNumber = document.getElementById('visitor-phone').value.trim();
   var qrEmail = document.getElementById('visitor-email').value.trim();
+  var qrVisitDate = document.getElementById("visit-date").value.trim();
   // Validate visitor details
-  if (qrName === '' || qrCompany === '' || qrPhoneNumber === '' || qrEmail === '') {
+  if (qrName === '' || qrCompany === '' || qrPhoneNumber === '' || qrEmail === '' || qrVisitDate == '') {
     showError('Please fill in all fields.');
     return;
   }
@@ -30,7 +31,8 @@ function generateQR() {
       phone: qrPhoneNumber,
       email: qrEmail,
       date: formattedDateTime,
-      pass_path: pass_path
+      pass_path: pass_path,
+      visit_date: qrVisitDate
     })
   })
   .then(response => response.json())

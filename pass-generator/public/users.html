@@ -26,9 +26,9 @@
           <th>Email</th>
           <th>Last Scanned</th>
           <th>Scan Count</th>
-          <th>Created Date <button id="sortDateBtn" class="btn btn-link">▲</button></th>
-          <th>Status <button id="sortStatusBtn" class="btn btn-link">▲</button></th>
-          
+          <th>Visit Date</th>
+          <th>Created Date <button id="sortDateBtn" class="btn btn-link"></button></th>
+          <th>Status <button id="sortStatusBtn" class="btn btn-link"></button></th>
         </tr>
       </thead>
       <tbody id="visitorList">
@@ -63,7 +63,7 @@ function attachSortListeners(sortFunction, visitors) {
 
   document.getElementById('sortStatusBtn').addEventListener('click', () => {
     toggleSortOrder(document.getElementById('sortStatusBtn'));
-    sortFunction(visitors, 'scan_count');
+    sortFunction(visitors, 'status');
   });
 }
 
@@ -97,9 +97,10 @@ function renderVisitors(visitors) {
   const currentDate = new Date().toISOString().split('T')[0];
 
   visitors.forEach(visitor => {
+    visitDate = visitor.visit_date
     const createdAtDate = visitor.created_at.split('T')[0];
     const scannedDate = visitor.last_scanned ? new Date(visitor.last_scanned).toLocaleString() : '';
-    const status = determineStatus(currentDate, visitor.created_at, visitor.scan_count);
+    const status = determineStatus(visitDate,currentDate, visitor.created_at, visitor.scan_count);
 
     const row = document.createElement('tr');
     row.innerHTML = `
@@ -109,6 +110,7 @@ function renderVisitors(visitors) {
       <td>${visitor.email}</td>
       <td>${scannedDate}</td>
       <td>${visitor.scan_count}</td>
+      <p>${formatDate(visitor.visit_date)}</p>
       <td>${new Date(visitor.created_at).toLocaleString()}</td>
       <td >${status}</td>
     `;
@@ -116,11 +118,23 @@ function renderVisitors(visitors) {
   });
 }
 
-function determineStatus(currentDate, createdAt, scanCount) {
-  if (currentDate > createdAt) {
+function formatDate(dateTimeString) {
+    const date = new Date(dateTimeString);
+    const hours = date.getHours() % 12 || 12; // Convert hours to 12-hour format
+    const minutes = date.getMinutes().toString().padStart(2, '0'); // Ensure minutes are always two digits
+    const seconds = date.getSeconds().toString().padStart(2, '0'); // Ensure seconds are always two digits
+    const ampm = date.getHours() >= 12 ? 'PM' : 'AM'; // Determine AM/PM
+
+    return `${(date.getMonth() + 1).toString().padStart(2, '0')}/${date.getDate().toString().padStart(2, '0')}/${date.getFullYear()}, ${hours}:${minutes}:${seconds} ${ampm}`;
+}
+
+
+function determineStatus(visitDate, currentDate, createdAt) {
+  visitDate = visitDate.split('T')[0];
+  if (visitDate > currentDate) {
+    return 'Not a visit day';
+  } else if (currentDate > visitDate) {
     return 'Expired';
-  } else if (scanCount > 5) {
-    return 'Limit Exceeded';
   } else {
     return 'Active';
   }
