@@ -86,6 +86,10 @@
               <td id="date"></td>
             </tr>
             <tr>
+              <th>Vist Date</th>
+              <td id="visit-date"></td>
+            </tr>
+            <tr>
               <th>Status</th>
               <td id="status"></td>
             </tr>
@@ -116,6 +120,7 @@ function updateUserDetails(userDetails) {
   const visitorEmail = document.getElementById('visitorEmail');
   const dateElement = document.getElementById('date');
   const visitorPassLink = document.getElementById('visitorPassLink');
+  const visitDate = document.getElementById('visit-date');
   const statusLabel = document.getElementById('status');
 
   // Update content directly using textContent
@@ -123,6 +128,10 @@ function updateUserDetails(userDetails) {
   companyName.textContent = userDetails.company_name;
   phoneNumber.textContent = userDetails.phone;
   visitorEmail.textContent = userDetails.email;
+
+
+  const formattedVisitDate = new Date(userDetails.visit_date).toLocaleString();
+  visitDate.textContent = formattedVisitDate;
 
   const formattedDate = new Date(userDetails.created_at).toLocaleString();
   dateElement.textContent = formattedDate;

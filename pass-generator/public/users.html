@@ -26,8 +26,9 @@
           <th>Email</th>
           <th>Last Scanned</th>
           <th>Scan Count</th>
-          <th>Created Date <button id="sortDateBtn" class="btn btn-link">▲</button></th>
-          <th>Status <button id="sortStatusBtn" class="btn btn-link">▲</button></th>
+          <th>Visit Date</th>
+          <th>Created Date <button id="sortDateBtn" class="btn btn-link"></button></th>
+          <th>Status <button id="sortStatusBtn" class="btn btn-link"></button></th>
           
         </tr>
       </thead>
@@ -63,7 +64,7 @@ function attachSortListeners(sortFunction, visitors) {
 
   document.getElementById('sortStatusBtn').addEventListener('click', () => {
     toggleSortOrder(document.getElementById('sortStatusBtn'));
-    sortFunction(visitors, 'scan_count');
+    sortFunction(visitors, 'status');
   });
 }
 
@@ -109,12 +110,24 @@ function renderVisitors(visitors) {
       <td>${visitor.email}</td>
       <td>${scannedDate}</td>
       <td>${visitor.scan_count}</td>
+      <p>${formatDate(visitor.visit_date)}</p>
       <td>${new Date(visitor.created_at).toLocaleString()}</td>
       <td >${status}</td>
     `;
     visitorList.appendChild(row);
   });
 }
+
+function formatDate(dateTimeString) {
+    const date = new Date(dateTimeString);
+    const hours = date.getHours() % 12 || 12; // Convert hours to 12-hour format
+    const minutes = date.getMinutes().toString().padStart(2, '0'); // Ensure minutes are always two digits
+    const seconds = date.getSeconds().toString().padStart(2, '0'); // Ensure seconds are always two digits
+    const ampm = date.getHours() >= 12 ? 'PM' : 'AM'; // Determine AM/PM
+
+    return `${(date.getMonth() + 1).toString().padStart(2, '0')}/${date.getDate().toString().padStart(2, '0')}/${date.getFullYear()}, ${hours}:${minutes}:${seconds} ${ampm}`;
+}
+
 
 function determineStatus(currentDate, createdAt, scanCount) {
   if (currentDate > createdAt) {
