@@ -93,30 +93,40 @@ function handleSearch() {
 }
 
 function renderVisitors(visitors) {
+  const visitorList = document.getElementById('visitorList');
   visitorList.innerHTML = '';
   const currentDate = new Date().toISOString().split('T')[0];
-
-  visitors.forEach(visitor => {
-    visitDate = visitor.visit_date
-    const createdAtDate = visitor.created_at.split('T')[0];
-    const scannedDate = visitor.last_scanned ? new Date(visitor.last_scanned).toLocaleString() : '';
-    const status = determineStatus(visitDate,currentDate, visitor.created_at, visitor.scan_count);
-
+  
+  if (visitors.length === 0) {
+    console.log("empty list");
     const row = document.createElement('tr');
-    row.innerHTML = `
-      <td>${visitor.name}</td>
-      <td>${visitor.company_name}</td>
-      <td><a href="/visitor-pass/${visitor.id}.pdf" target="_blank">${visitor.id}.pdf</a></td>
-      <td>${visitor.email}</td>
-      <td>${scannedDate}</td>
-      <td>${visitor.scan_count}</td>
-      <p>${formatDate(visitor.visit_date)}</p>
-      <td>${new Date(visitor.created_at).toLocaleString()}</td>
-      <td >${status}</td>
-    `;
+    row.innerHTML = `<td colspan="9">No data found</td>`;
     visitorList.appendChild(row);
-  });
+  } else {
+    visitors.forEach(visitor => {
+      const visitDate = visitor.visit_date;
+      const createdAtDate = visitor.created_at.split('T')[0];
+      const scannedDate = visitor.last_scanned ? new Date(visitor.last_scanned).toLocaleString() : '';
+      const status = determineStatus(visitDate, currentDate, visitor.created_at, visitor.scan_count); // Assuming determineStatus is defined elsewhere
+
+      console.log("not empty list");
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td>${visitor.name}</td>
+        <td>${visitor.company_name}</td>
+        <td><a href="/visitor-pass/${visitor.id}.pdf" target="_blank">${visitor.id}.pdf</a></td>
+        <td>${visitor.email}</td>
+        <td>${scannedDate}</td>
+        <td>${visitor.scan_count}</td>
+        <td>${formatDate(visitor.visit_date)}</td>
+        <td>${new Date(visitor.created_at).toLocaleString()}</td>
+        <td>${status}</td>
+      `;
+      visitorList.appendChild(row);
+    });
+  }
 }
+
 
 function formatDate(dateTimeString) {
     const date = new Date(dateTimeString);
