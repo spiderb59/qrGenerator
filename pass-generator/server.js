@@ -20,7 +20,6 @@ app.get('/visitors', (req, res) => {
 app.use('/visitor-pass', express.static(__dirname + '/visitor-pass'));
 
 
-
 // Endpoint to save visitor detail
 app.post('/save-visitor-details', passController.saveVisitorDetails);
 // Endpoint to fetch visitor detail and update when scanned
@@ -29,6 +28,11 @@ app.route('/user/:id')
   .put(userController.updateUserDetails);
 //Endpoint to handle fetching all user details
 app.get('/all-visitors', allUserControllers.getAllVisitorDetails);
+
+
+app.use((req, res) => {
+  res.status(404).sendFile(__dirname + '/public/404.html');
+});
 
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
